@@ -17,7 +17,7 @@ const ibmPlex = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Job Hunter — AI-Powered Job Discovery & ATS CV Engine",
+  title: "Truefit — AI-Powered Job Discovery & ATS CV Engine",
   description:
     "Discover jobs in your area, get AI-powered match scores, and optimize your resume for ATS systems.",
 };

@@ -64,7 +64,7 @@ export default function LoginPage() {
             className="text-3xl font-bold tracking-tight"
             style={{ color: "var(--color-primary)" }}
           >
-            Job Hunter
+            Truefit
           </h1>
           <p className="mt-2 text-sm" style={{ color: "var(--color-text-muted)" }}>
             {isSignUp ? "Create your account" : "Sign in to your account"}

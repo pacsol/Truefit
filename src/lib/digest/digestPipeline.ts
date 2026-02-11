@@ -110,7 +110,7 @@ export async function runDigestForUser(params: {
       const html = buildDigestHtml(displayName || email, digestMatches);
       await sendEmail({
         to: email,
-        subject: `Job Hunter: ${digestMatches.length} new matches for ${today}`,
+        subject: `Truefit: ${digestMatches.length} new matches for ${today}`,
         html,
       });
       emailSent = true;

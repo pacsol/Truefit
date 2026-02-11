@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             className="text-xl font-bold tracking-tight"
             style={{ color: "var(--color-primary)", fontFamily: "var(--font-primary)" }}
           >
-            Job Hunter
+            Truefit
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
