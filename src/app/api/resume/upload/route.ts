@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { parseResume } from "@/lib/resume/parser";
 
 /**
  * POST /api/resume/upload
  * Accepts multipart form with a file field "resume".
  * Parses the file and returns extracted text, sections, and skills.
- *
- * In production this would also upload to Firebase Storage and persist
- * metadata to Firestore. For MVP we parse in-memory and return the result
- * so the client can persist via the client SDK.
  */
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const formData = await req.formData();
     const file = formData.get("resume") as File | null;
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const mimeType = file.type || (file.name.endsWith(".pdf") ? "application/pdf" : "docx");
+    const mimeType = file.type || (file.name.endsWith(".pdf") ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     const parsed = await parseResume(buffer, mimeType);
 
     return NextResponse.json({

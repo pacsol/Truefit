@@ -19,12 +19,19 @@ export function useProfile() {
     }
 
     let cancelled = false;
-    getDocument<Profile>(collections.profiles, user.uid).then((p) => {
-      if (!cancelled) {
-        setProfile(p);
-        setLoading(false);
-      }
-    });
+    getDocument<Profile>(collections.profiles, user.uid)
+      .then((p) => {
+        if (!cancelled) {
+          setProfile(p);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProfile(null);
+          setLoading(false);
+        }
+      });
 
     return () => {
       cancelled = true;

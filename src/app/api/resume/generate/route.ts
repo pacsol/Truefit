@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { generateJobSpecificCV } from "@/lib/resume/generator";
 
 /**
@@ -7,6 +8,9 @@ import { generateJobSpecificCV } from "@/lib/resume/generator";
  * Returns: { content: string } — the generated CV text.
  */
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await req.json();
     const {

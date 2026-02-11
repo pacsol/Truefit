@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { createDocument, collections } from "@/lib/firebase/firestore";
@@ -36,8 +36,13 @@ export default function OnboardingPage() {
     );
   }
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
   if (!user) {
-    router.replace("/login");
     return null;
   }
 

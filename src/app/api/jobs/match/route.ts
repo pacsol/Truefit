@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { matchWithAI, matchLocal, toMatchInput } from "@/lib/matching/matchEngine";
 
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await req.json();
     const { profile, job, useAI = false } = body;

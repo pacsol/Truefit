@@ -13,6 +13,7 @@ import {
   where,
 } from "@/lib/firebase/firestore";
 import type { Seniority, JobSearch } from "@/types";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 const SENIORITY_OPTIONS: Seniority[] = [
   "junior",
@@ -61,7 +62,7 @@ export default function SettingsPage() {
     queryDocuments<JobSearch>(
       collections.jobSearches,
       where("userId", "==", user.uid)
-    ).then(setSavedSearches);
+    ).then(setSavedSearches).catch(() => {});
   }, [user]);
 
   async function handleSaveProfile(e: React.FormEvent) {
@@ -107,7 +108,7 @@ export default function SettingsPage() {
           location: newSearchLocation || location,
           radiusKm: newSearchRadius,
           freshnessDays: newSearchFreshness,
-        } as JobSearch & { id: string },
+        } as unknown as JobSearch & { id: string },
       ]);
       setNewSearchQuery("");
       setNewSearchLocation("");
@@ -119,8 +120,12 @@ export default function SettingsPage() {
   }
 
   async function handleDeleteSearch(id: string) {
-    await deleteDocument(collections.jobSearches, id);
-    setSavedSearches((prev) => prev.filter((s) => s.id !== id));
+    try {
+      await deleteDocument(collections.jobSearches, id);
+      setSavedSearches((prev) => prev.filter((s) => s.id !== id));
+    } catch {
+      // silent — keep the item in the list so user can retry
+    }
   }
 
   async function handleRunDigest() {
@@ -128,7 +133,7 @@ export default function SettingsPage() {
     setDigestRunning(true);
     setDigestMsg("");
     try {
-      const res = await fetch("/api/digest", {
+      const res = await fetchWithAuth("/api/digest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

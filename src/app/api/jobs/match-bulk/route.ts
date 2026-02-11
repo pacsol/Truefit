@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { matchLocal, toMatchInput, type MatchResult } from "@/lib/matching/matchEngine";
 
 /**
@@ -7,6 +8,9 @@ import { matchLocal, toMatchInput, type MatchResult } from "@/lib/matching/match
  * Returns: { matches: { job, match }[] } sorted by score desc.
  */
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await req.json();
     const { profile, jobs } = body;

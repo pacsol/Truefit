@@ -3,7 +3,8 @@ import mammoth from "mammoth";
 // Lazy-load pdf-parse to avoid its test-file import at build time
 async function loadPdfParse(): Promise<(buf: Buffer) => Promise<{ text: string }>> {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  return require("pdf-parse");
+  const mod = require("pdf-parse");
+  return mod;
 }
 
 export interface ParsedResume {

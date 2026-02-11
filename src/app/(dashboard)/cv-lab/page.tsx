@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 interface ParsedSection {
   heading: string;
@@ -52,7 +53,7 @@ export default function CvLabPage() {
     try {
       const formData = new FormData();
       formData.append("resume", file);
-      const res = await fetch("/api/resume/upload", {
+      const res = await fetchWithAuth("/api/resume/upload", {
         method: "POST",
         body: formData,
       });
@@ -76,7 +77,7 @@ export default function CvLabPage() {
     setGenError("");
     setGenerating(true);
     try {
-      const res = await fetch("/api/resume/generate", {
+      const res = await fetchWithAuth("/api/resume/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -110,7 +111,7 @@ export default function CvLabPage() {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
-      const res = await fetch("/api/ats/score", {
+      const res = await fetchWithAuth("/api/ats/score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cvText: text, jobKeywords: keywords }),

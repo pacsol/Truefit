@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import type { TerminationReason, LoopPhase } from "@/types";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 interface HistoryEntry {
   iteration: number;
@@ -40,7 +41,7 @@ export default function LoopPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("/api/loop", {
+      const res = await fetchWithAuth("/api/loop", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, loopId, ...extra }),
@@ -60,7 +61,6 @@ export default function LoopPage() {
   async function handleStart(e: React.FormEvent) {
     e.preventDefault();
     await loopAction("start", {
-      userId: user?.uid ?? "",
       resumeText,
       jobDescription,
       jobSkills: jobSkills.split(",").map((s) => s.trim()).filter(Boolean),

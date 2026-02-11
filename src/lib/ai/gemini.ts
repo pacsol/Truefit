@@ -23,5 +23,7 @@ export async function generateJSON<T = unknown>(
     prompt + "\n\nRespond with valid JSON only, no markdown fences.",
     modelName
   );
-  return JSON.parse(text) as T;
+  // Strip markdown fences if the model wraps the response
+  const cleaned = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/, "").trim();
+  return JSON.parse(cleaned) as T;
 }

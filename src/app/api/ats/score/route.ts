@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { simulateAts } from "@/lib/ats/atsSimulator";
 
 /**
@@ -7,6 +8,9 @@ import { simulateAts } from "@/lib/ats/atsSimulator";
  * Returns ATS simulation result.
  */
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await req.json();
     const { cvText, jobKeywords } = body;

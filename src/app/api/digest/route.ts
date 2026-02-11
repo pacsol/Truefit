@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
 import { runDigestForUser } from "@/lib/digest/digestPipeline";
 import type { Profile, JobSearch } from "@/types";
 
 /**
  * POST /api/digest
  *
- * Runs the digest pipeline for a single user.
- * In production this would be a Cloud Function triggered by Cloud Scheduler
- * that iterates over all users. For MVP it accepts user data in the body.
- *
- * Body: { userId, email, displayName, profile, searches, topN?, sendEmail? }
+ * Runs the digest pipeline for the authenticated user.
+ * Body: { email, displayName, profile, searches, topN?, sendEmail? }
  */
 export async function POST(req: NextRequest) {
+  const auth = await verifyAuth(req);
+  if (isAuthError(auth)) return auth;
+
   try {
     const body = await req.json();
     const {
-      userId,
       email,
       displayName,
       profile,
@@ -24,15 +24,15 @@ export async function POST(req: NextRequest) {
       sendEmail: sendEmailFlag,
     } = body;
 
-    if (!userId || !profile || !searches) {
+    if (!profile || !searches) {
       return NextResponse.json(
-        { error: "userId, profile, and searches are required" },
+        { error: "profile and searches are required" },
         { status: 400 }
       );
     }
 
     const result = await runDigestForUser({
-      userId,
+      userId: auth.uid,
       email: email ?? "",
       displayName: displayName ?? "",
       profile: profile as Profile,

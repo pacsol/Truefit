@@ -82,10 +82,7 @@ export async function runIteration(
   const beforeAts = simulateAts(snapshot.currentResumeText, jobSkills);
   const previousScore = beforeAts.score;
 
-  // 2. Update phase → proposing
-  snapshot.phase = "proposing";
-
-  // 3. Ask Gemini to propose improvements
+  // 2. Ask Gemini to propose improvements
   const proposalPrompt = buildProposalPrompt(
     snapshot.currentResumeText,
     beforeAts,
@@ -94,9 +91,6 @@ export async function runIteration(
     nextIteration
   );
   const improvedText = await generateText(proposalPrompt);
-
-  // 4. Update phase → rescoring
-  snapshot.phase = "rescoring";
 
   // 5. Re-score the improved version
   const afterAts = simulateAts(improvedText, jobSkills);
@@ -129,7 +123,7 @@ export async function runIteration(
     atsScore: newScore,
     diff,
     rationale,
-    timestamp: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 } as LoopHistoryEntry["timestamp"],
+    timestamp: new Date().toISOString() as unknown as LoopHistoryEntry["timestamp"],
   };
 
   // 9. Update snapshot

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import type { Recommendation } from "@/types";
 
 interface NormalizedJob {
@@ -25,13 +25,24 @@ interface MatchResult {
 
 function JobDetailContent() {
   const searchParams = useSearchParams();
-  const encoded = searchParams.get("d");
+  const jobId = searchParams.get("id");
 
-  if (!encoded) {
+  const data = useMemo(() => {
+    if (!jobId) return null;
+    try {
+      const raw = sessionStorage.getItem(`job_${jobId}`);
+      if (!raw) return null;
+      return JSON.parse(raw) as { job: NormalizedJob; match: MatchResult };
+    } catch {
+      return null;
+    }
+  }, [jobId]);
+
+  if (!data) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <p style={{ color: "var(--color-text-muted)" }}>No job data found.</p>
+          <p style={{ color: "var(--color-text-muted)" }}>No job data found. Try searching again.</p>
           <Link href="/jobs" className="mt-4 inline-block text-sm font-medium" style={{ color: "var(--color-accent)" }}>
             Back to Jobs
           </Link>
@@ -40,20 +51,7 @@ function JobDetailContent() {
     );
   }
 
-  let job: NormalizedJob;
-  let match: MatchResult;
-  try {
-    const decoded = JSON.parse(atob(encoded));
-    job = decoded.job;
-    match = decoded.match;
-  } catch {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p style={{ color: "var(--color-risk)" }}>Failed to load job data.</p>
-      </div>
-    );
-  }
-
+  const { job, match } = data;
   const postedDate = new Date(job.postedAt.seconds * 1000);
 
   const recStyles: Record<Recommendation, { bg: string; text: string }> = {

@@ -5,6 +5,15 @@ export interface EmailMessage {
   text?: string;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 /**
  * Send an email via SendGrid.
  * Abstracts the API so it can be swapped for another provider or mocked in tests.
@@ -26,7 +35,7 @@ export async function sendEmail(msg: EmailMessage): Promise<void> {
     },
     body: JSON.stringify({
       personalizations: [{ to: [{ email: msg.to }] }],
-      from: { email: from, name: "Job Hunter" },
+      from: { email: from, name: "Truefit" },
       subject: msg.subject,
       content: [
         ...(msg.text ? [{ type: "text/plain", value: msg.text }] : []),
@@ -51,8 +60,8 @@ export function buildDigestHtml(
       (m) =>
         `<tr>
           <td style="padding:8px 12px;border-bottom:1px solid #eee">
-            <a href="${m.url}" style="color:#2563eb;text-decoration:none;font-weight:600">${m.title}</a>
-            <br><span style="color:#666;font-size:13px">${m.company}</span>
+            <a href="${escapeHtml(m.url)}" style="color:#2563eb;text-decoration:none;font-weight:600">${escapeHtml(m.title)}</a>
+            <br><span style="color:#666;font-size:13px">${escapeHtml(m.company)}</span>
           </td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;color:${m.score >= 70 ? "#16a34a" : m.score >= 40 ? "#ca8a04" : "#dc2626"}">
             ${m.score}
@@ -67,10 +76,10 @@ export function buildDigestHtml(
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:0;padding:0;background:#f9fafb">
   <div style="max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb">
     <div style="background:#2563eb;padding:24px 20px">
-      <h1 style="color:#fff;margin:0;font-size:20px">Job Hunter — Daily Digest</h1>
+      <h1 style="color:#fff;margin:0;font-size:20px">Truefit — Daily Digest</h1>
     </div>
     <div style="padding:20px">
-      <p style="color:#374151;margin:0 0 16px">Hi ${userName}, here are your top job matches for today:</p>
+      <p style="color:#374151;margin:0 0 16px">Hi ${escapeHtml(userName)}, here are your top job matches for today:</p>
       <table style="width:100%;border-collapse:collapse">
         <thead>
           <tr style="background:#f9fafb">
@@ -81,7 +90,7 @@ export function buildDigestHtml(
         <tbody>${rows}</tbody>
       </table>
       <p style="margin:20px 0 0;color:#6b7280;font-size:13px">
-        <a href="#" style="color:#2563eb">View all matches in Job Hunter</a>
+        View all matches in your Truefit dashboard.
       </p>
     </div>
   </div>

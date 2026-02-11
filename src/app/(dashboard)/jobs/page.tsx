@@ -9,6 +9,7 @@ import {
   where,
 } from "@/lib/firebase/firestore";
 import type { JobSearch, Recommendation } from "@/types";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 interface NormalizedJob {
   externalId: string;
@@ -51,7 +52,7 @@ export default function JobsPage() {
     queryDocuments<JobSearch>(
       collections.jobSearches,
       where("userId", "==", user.uid)
-    ).then(setSavedSearches);
+    ).then(setSavedSearches).catch(() => {});
   }, [user]);
 
   // Pre-fill from profile
@@ -73,7 +74,7 @@ export default function JobsPage() {
     setSearching(true);
     setScoredJobs([]);
     try {
-      const searchRes = await fetch("/api/jobs/search", {
+      const searchRes = await fetchWithAuth("/api/jobs/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
@@ -87,7 +88,7 @@ export default function JobsPage() {
       }
 
       if (profile) {
-        const matchRes = await fetch("/api/jobs/match-bulk", {
+        const matchRes = await fetchWithAuth("/api/jobs/match-bulk", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ profile, jobs: searchData.jobs }),
@@ -312,9 +313,7 @@ function JobCard({ job, match }: { job: NormalizedJob; match: MatchResult }) {
     (Date.now() - postedDate.getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  const detailParams = new URLSearchParams({
-    d: btoa(JSON.stringify({ job, match })),
-  });
+  const detailHref = `/jobs/detail?id=${encodeURIComponent(job.externalId)}`;
 
   const recStyle = REC_STYLES[match.recommendation];
 
@@ -392,7 +391,10 @@ function JobCard({ job, match }: { job: NormalizedJob; match: MatchResult }) {
 
       <div className="mt-4 flex gap-3">
         <Link
-          href={`/jobs/detail?${detailParams.toString()}`}
+          href={detailHref}
+          onClick={() => {
+            try { sessionStorage.setItem(`job_${job.externalId}`, JSON.stringify({ job, match })); } catch {}
+          }}
           className="rounded-lg px-4 py-2 text-sm font-medium transition-opacity"
           style={{
             background: "var(--color-accent)",
