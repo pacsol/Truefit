@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* Brand palette */
+  --color-primary: #0F172A;
+  --color-secondary: #1E3A8A;
+  --color-accent: #0D9488;
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-muted: #64748B;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-risk: #B91C1C;
+
+  /* Extended palette */
+  --color-accent-light: #CCFBF1;
+  --color-accent-mid: #5EEAD4;
+  --color-secondary-light: #DBEAFE;
+  --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #F8FAFC;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.04);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-primary: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  --font-technical: var(--font-ibm-plex), "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-primary);
+  --font-mono: var(--font-mono);
+
+  /* Semantic colors for Tailwind */
+  --color-brand: var(--color-primary);
+  --color-brand-secondary: var(--color-secondary);
+  --color-brand-accent: var(--color-accent);
+}
+
+/* ── Base Styles ───────────────────────────────────────────────────────────── */
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Typography Scale (8pt grid) ───────────────────────────────────────────── */
+
+h1 { font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; }
+h2 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
+
+/* ── Focus Styles ──────────────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: var(--radius-full); }
+
+/* ── Utility Classes ───────────────────────────────────────────────────────── */
+
+.text-brand { color: var(--color-primary); }
+.text-accent { color: var(--color-accent); }
+.text-muted { color: var(--color-muted); }
+.bg-surface { background: var(--color-surface); }
+.border-default { border-color: var(--color-border); }
