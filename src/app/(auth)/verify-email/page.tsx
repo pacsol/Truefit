@@ -115,13 +115,13 @@ export default function VerifyEmailPage() {
                 Email Verified
               </h1>
               <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                Your email has been verified. Would you like to add an authenticator app for extra security?
+                Your email has been verified. Let&apos;s set up your profile.
               </p>
             </div>
 
             <div className="space-y-3">
               <button
-                onClick={() => router.push("/setup-authenticator")}
+                onClick={() => router.replace("/onboarding")}
                 className="w-full py-2.5 text-sm font-semibold transition-opacity"
                 style={{
                   background: "var(--color-accent)",
@@ -129,25 +129,20 @@ export default function VerifyEmailPage() {
                   borderRadius: "var(--radius-md)",
                 }}
               >
-                Set Up Authenticator App
-              </button>
-
-              <button
-                onClick={() => router.replace("/onboarding")}
-                className="w-full border py-2.5 text-sm font-semibold transition-opacity"
-                style={{
-                  borderColor: "var(--color-border)",
-                  background: "var(--color-surface)",
-                  color: "var(--color-text-primary)",
-                  borderRadius: "var(--radius-md)",
-                }}
-              >
-                Skip for Now
+                Continue
               </button>
             </div>
 
             <p className="text-center text-xs" style={{ color: "var(--color-text-muted)" }}>
-              You can always enable an authenticator later from Settings.
+              Want extra security?{" "}
+              <button
+                type="button"
+                onClick={() => router.push("/setup-authenticator")}
+                className="font-semibold"
+                style={{ color: "var(--color-accent)" }}
+              >
+                Set up an authenticator app
+              </button>
             </p>
           </>
         ) : (

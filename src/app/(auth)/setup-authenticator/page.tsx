@@ -331,17 +331,17 @@ export default function SetupAuthenticatorPage() {
           <>
             <p
               className="text-center text-sm leading-relaxed"
-              style={{ color: "var(--color-risk)" }}
+              style={{ color: "var(--color-text-muted)" }}
             >
-              {error}
+              Authenticator setup is not available yet. This feature requires
+              Firebase Identity Platform to be enabled in the Firebase console.
             </p>
             <p
               className="text-center text-xs leading-relaxed"
               style={{ color: "var(--color-text-muted)" }}
             >
-              Authenticator setup requires Firebase Identity Platform to be
-              enabled in your Firebase project. You can skip this step and set it
-              up later from Settings.
+              You can enable it later from the Firebase console and set up
+              the authenticator from Settings.
             </p>
             <button
               onClick={() => router.replace("/onboarding")}
@@ -352,7 +352,7 @@ export default function SetupAuthenticatorPage() {
                 borderRadius: "var(--radius-md)",
               }}
             >
-              Continue Without Authenticator
+              Continue to Profile Setup
             </button>
           </>
         )}
