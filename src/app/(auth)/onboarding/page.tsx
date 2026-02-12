@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/AuthProvider";
+import { useProfile } from "@/components/useProfile";
+import { signOut } from "@/lib/firebase/auth";
 import { createDocument, collections } from "@/lib/firebase/firestore";
 import type { Seniority } from "@/types";
 
@@ -15,7 +16,7 @@ const SENIORITY_OPTIONS: Seniority[] = [
 ];
 
 export default function OnboardingPage() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useProfile();
   const router = useRouter();
   const [skills, setSkills] = useState("");
   const [seniority, setSeniority] = useState<Seniority>("mid");
@@ -29,7 +30,13 @@ export default function OnboardingPage() {
     if (!loading && !user) {
       router.replace("/login");
     }
-  }, [loading, user, router]);
+    if (!loading && user && !user.emailVerified) {
+      router.replace("/verify-email");
+    }
+    if (!loading && user && profile) {
+      router.replace("/dashboard");
+    }
+  }, [loading, user, profile, router]);
 
   if (loading) {
     return (
@@ -42,7 +49,7 @@ export default function OnboardingPage() {
     );
   }
 
-  if (!user) {
+  if (!user || !user.emailVerified || profile) {
     return null;
   }
 
@@ -66,7 +73,7 @@ export default function OnboardingPage() {
           .map((s) => s.trim())
           .filter(Boolean),
       });
-      router.push("/dashboard");
+      router.replace("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
@@ -227,6 +234,21 @@ export default function OnboardingPage() {
             {saving ? "Saving\u2026" : "Save & Continue"}
           </button>
         </form>
+
+        <p className="text-center text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Wrong account?{" "}
+          <button
+            type="button"
+            onClick={async () => {
+              await signOut();
+              router.replace("/login");
+            }}
+            className="font-semibold"
+            style={{ color: "var(--color-accent)" }}
+          >
+            Sign out
+          </button>
+        </p>
       </div>
     </div>
   );

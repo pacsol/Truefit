@@ -12,17 +12,23 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
     if (!loading && !user) {
       router.replace("/login");
     }
+    if (!loading && user && !user.emailVerified) {
+      router.replace("/verify-email");
+    }
   }, [user, loading, router]);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"
+          style={{ borderColor: "var(--color-accent)", borderTopColor: "transparent" }}
+        />
       </div>
     );
   }
 
-  if (!user) return null;
+  if (!user || !user.emailVerified) return null;
 
   return <>{children}</>;
 }

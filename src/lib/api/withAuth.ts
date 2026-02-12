@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase/admin";
+import { getAdminAuth } from "@/lib/firebase/admin";
 
 /**
  * Verifies the Firebase ID token from the Authorization header.
@@ -18,7 +18,7 @@ export async function verifyAuth(
 
   const idToken = authHeader.slice(7);
   try {
-    const decoded = await adminAuth.verifyIdToken(idToken);
+    const decoded = await getAdminAuth().verifyIdToken(idToken);
     return { uid: decoded.uid };
   } catch {
     return NextResponse.json(

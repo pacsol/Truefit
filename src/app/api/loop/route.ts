@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
-import { adminDb } from "@/lib/firebase/admin";
+import { getAdminDb } from "@/lib/firebase/admin";
 import {
   createLoop,
   runIteration,
@@ -10,10 +10,12 @@ import {
   type LoopSnapshot,
 } from "@/lib/loop/loopController";
 
-const loopsCollection = adminDb.collection("loop_state");
+function loopsCollection() {
+  return getAdminDb().collection("loop_state");
+}
 
 async function getLoopEntry(loopId: string, userId: string) {
-  const doc = await loopsCollection.doc(loopId).get();
+  const doc = await loopsCollection().doc(loopId).get();
   if (!doc.exists) return null;
   const data = doc.data()!;
   if (data.userId !== userId) return null;
@@ -21,7 +23,7 @@ async function getLoopEntry(loopId: string, userId: string) {
 }
 
 async function saveLoopEntry(loopId: string, entry: { snapshot: LoopSnapshot; jobDescription: string; jobSkills: string[] }) {
-  await loopsCollection.doc(loopId).set(entry, { merge: true });
+  await loopsCollection().doc(loopId).set(entry, { merge: true });
 }
 
 /** POST /api/loop — dispatch loop actions */
