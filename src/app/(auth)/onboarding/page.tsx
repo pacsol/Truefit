@@ -25,6 +25,12 @@ export default function OnboardingPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--color-bg)" }}>
@@ -35,12 +41,6 @@ export default function OnboardingPage() {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/login");
-    }
-  }, [loading, user, router]);
 
   if (!user) {
     return null;
