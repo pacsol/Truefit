@@ -6,7 +6,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { resendVerificationEmail, reloadUser, signOut } from "@/lib/firebase/auth";
 
 export default function VerifyEmailPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   const router = useRouter();
   const [resending, setResending] = useState(false);
   const [message, setMessage] = useState("");
@@ -31,11 +31,13 @@ export default function VerifyEmailPage() {
       const refreshed = await reloadUser();
       if (refreshed?.emailVerified) {
         setVerified(true);
+        // Update the auth context so downstream pages see emailVerified = true
+        await refreshUser();
       }
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [user, verified]);
+  }, [user, verified, refreshUser]);
 
   const handleResend = useCallback(async () => {
     setResending(true);
@@ -57,6 +59,7 @@ export default function VerifyEmailPage() {
       const refreshed = await reloadUser();
       if (refreshed?.emailVerified) {
         setVerified(true);
+        await refreshUser();
       } else {
         setMessage("Email not verified yet. Please check your inbox and click the verification link.");
       }
@@ -65,7 +68,7 @@ export default function VerifyEmailPage() {
     } finally {
       setChecking(false);
     }
-  }, []);
+  }, [refreshUser]);
 
   if (loading) {
     return (
