@@ -16,6 +16,7 @@ export async function fetchAndNormalize(
   );
 
   const allRaw: (RawJob & { sourceId: string })[] = [];
+  const errors: string[] = [];
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r.status === "fulfilled") {
@@ -23,11 +24,15 @@ export async function fetchAndNormalize(
         allRaw.push({ ...job, sourceId: adapters[i].sourceId });
       }
     } else {
-      console.error(
-        `Adapter ${adapters[i].name} failed:`,
-        r.reason
-      );
+      const msg = r.reason instanceof Error ? r.reason.message : String(r.reason);
+      console.error(`Adapter ${adapters[i].name} failed:`, r.reason);
+      errors.push(`${adapters[i].name}: ${msg}`);
     }
+  }
+
+  // If ALL adapters failed, throw so the caller can report the error
+  if (allRaw.length === 0 && errors.length > 0) {
+    throw new Error(`All job sources failed — ${errors.join("; ")}`);
   }
 
   // Dedupe by externalId (first occurrence wins)
