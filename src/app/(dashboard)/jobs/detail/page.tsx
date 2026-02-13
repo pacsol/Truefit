@@ -64,7 +64,7 @@ function JobDetailContent() {
 
   return (
     <div className="space-y-6">
-      <Link href="/jobs" className="inline-flex items-center gap-1 text-sm font-medium" style={{ color: "var(--color-accent)" }}>
+      <Link href="/jobs" className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium hover:opacity-80" style={{ color: "var(--color-accent)" }}>
         &larr; Back to search results
       </Link>
 
@@ -119,19 +119,32 @@ function JobDetailContent() {
             </div>
 
             <div className="mt-6">
-              <a
-                href={job.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold"
-                style={{
-                  background: "var(--color-accent)",
-                  color: "var(--color-text-inverse)",
-                  borderRadius: "var(--radius-md)",
-                }}
-              >
-                Apply Externally
-              </a>
+              {job.url ? (
+                <a
+                  href={job.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block cursor-pointer rounded-lg px-6 py-2.5 text-sm font-semibold transition-opacity hover:opacity-85 active:opacity-75"
+                  style={{
+                    background: "var(--color-accent)",
+                    color: "var(--color-text-inverse)",
+                    borderRadius: "var(--radius-md)",
+                  }}
+                >
+                  Apply Externally
+                </a>
+              ) : (
+                <span
+                  className="inline-block rounded-lg px-6 py-2.5 text-sm font-semibold opacity-40"
+                  style={{
+                    background: "var(--color-accent)",
+                    color: "var(--color-text-inverse)",
+                    borderRadius: "var(--radius-md)",
+                  }}
+                >
+                  No External Link
+                </span>
+              )}
             </div>
           </div>
         </div>

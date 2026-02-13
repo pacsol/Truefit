@@ -395,7 +395,7 @@ function JobCard({ job, match }: { job: NormalizedJob; match: MatchResult }) {
           onClick={() => {
             try { sessionStorage.setItem(`job_${job.externalId}`, JSON.stringify({ job, match })); } catch {}
           }}
-          className="rounded-lg px-4 py-2 text-sm font-medium transition-opacity"
+          className="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-opacity hover:opacity-85 active:opacity-75"
           style={{
             background: "var(--color-accent)",
             color: "var(--color-text-inverse)",
@@ -404,19 +404,32 @@ function JobCard({ job, match }: { job: NormalizedJob; match: MatchResult }) {
         >
           View Details
         </Link>
-        <a
-          href={job.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-          style={{
-            borderColor: "var(--color-border)",
-            color: "var(--color-text-secondary)",
-            borderRadius: "var(--radius-md)",
-          }}
-        >
-          Apply Externally
-        </a>
+        {job.url ? (
+          <a
+            href={job.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:opacity-85 active:opacity-75"
+            style={{
+              borderColor: "var(--color-border)",
+              color: "var(--color-text-secondary)",
+              borderRadius: "var(--radius-md)",
+            }}
+          >
+            Apply Externally
+          </a>
+        ) : (
+          <span
+            className="rounded-lg border px-4 py-2 text-sm font-medium opacity-40"
+            style={{
+              borderColor: "var(--color-border)",
+              color: "var(--color-text-secondary)",
+              borderRadius: "var(--radius-md)",
+            }}
+          >
+            No External Link
+          </span>
+        )}
       </div>
     </div>
   );
