@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAuth, isAuthError } from "@/lib/api/withAuth";
-import { AdzunaAdapter } from "@/lib/adapters/adzuna";
+import { JSearchAdapter } from "@/lib/adapters/jsearch";
 import { RemotiveAdapter } from "@/lib/adapters/remotive";
 import { fetchAndNormalize } from "@/lib/adapters/normalize";
 import type { JobSearchParams } from "@/lib/adapters/jobSource";
 
-const adapters = [new AdzunaAdapter(), new RemotiveAdapter()];
+const adapters = [new JSearchAdapter(), new RemotiveAdapter()];
 
 export async function POST(req: NextRequest) {
   const auth = await verifyAuth(req);

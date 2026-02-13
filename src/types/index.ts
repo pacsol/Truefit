@@ -44,7 +44,7 @@ export interface JobSearch extends OwnedDocument {
 
 export interface JobSource extends BaseDocument {
   sourceId: string;
-  adapter: string; // "adzuna" | "remotive" | …
+  adapter: string; // "jsearch" | "remotive" | …
   lastFetchedAt: Timestamp | null;
 }
 

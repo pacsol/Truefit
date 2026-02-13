@@ -1,11 +1,11 @@
-import { AdzunaAdapter } from "@/lib/adapters/adzuna";
+import { JSearchAdapter } from "@/lib/adapters/jsearch";
 import { RemotiveAdapter } from "@/lib/adapters/remotive";
 import { fetchAndNormalize } from "@/lib/adapters/normalize";
 import { matchLocal, toMatchInput, type MatchResult } from "@/lib/matching/matchEngine";
 import { sendEmail, buildDigestHtml } from "@/lib/email/sendgrid";
 import type { Profile, JobSearch } from "@/types";
 
-const adapters = [new AdzunaAdapter(), new RemotiveAdapter()];
+const adapters = [new JSearchAdapter(), new RemotiveAdapter()];
 
 export interface DigestMatch {
   title: string;
