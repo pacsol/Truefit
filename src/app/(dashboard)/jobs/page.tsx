@@ -115,7 +115,7 @@ export default function JobsPage() {
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    searchAndScore({ query, location, radiusKm, freshnessDays: 14 });
+    searchAndScore({ query, location, radiusKm, freshnessDays: 30 });
   }
 
   function runSavedSearch(search: JobSearch) {

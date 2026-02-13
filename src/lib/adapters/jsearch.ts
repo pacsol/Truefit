@@ -58,10 +58,13 @@ export class JSearchAdapter implements JobSourceAdapter {
     // JSearch expects a combined query like "Quantity Surveyor in Dubai"
     const searchQuery = location ? `${query} in ${location}` : query;
 
+    // JSearch returns ~10 results per page; request enough pages to fill pageSize
+    const numPages = Math.min(Math.ceil(pageSize / 10), 10);
+
     const url = new URL(JSEARCH_BASE);
     url.searchParams.set("query", searchQuery);
     url.searchParams.set("page", String(page));
-    url.searchParams.set("num_pages", "1");
+    url.searchParams.set("num_pages", String(numPages));
     url.searchParams.set("date_posted", datePostedFilter(freshnessDays));
     if (radiusKm) url.searchParams.set("radius", String(radiusKm));
 

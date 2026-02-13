@@ -18,9 +18,9 @@ export async function POST(req: NextRequest) {
       query: body.query ?? "",
       location: body.location ?? "",
       radiusKm: body.radiusKm ?? 50,
-      freshnessDays: body.freshnessDays ?? 14,
+      freshnessDays: body.freshnessDays ?? 30,
       page: body.page ?? 1,
-      pageSize: body.pageSize ?? 20,
+      pageSize: body.pageSize ?? 50,
     };
 
     const jobs = await fetchAndNormalize(adapters, params);
