@@ -59,7 +59,7 @@ export default function OnboardingPage() {
     setSaving(true);
 
     try {
-      await createDocument(collections.profiles, user!.uid, {
+      const savePromise = createDocument(collections.profiles, user!.uid, {
         userId: user!.uid,
         skills: skills
           .split(",")
@@ -73,9 +73,21 @@ export default function OnboardingPage() {
           .map((s) => s.trim())
           .filter(Boolean),
       });
+
+      // Timeout after 10 seconds to avoid indefinite hang
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Save timed out. Please check that Firestore is enabled in your Firebase project.")), 10000)
+      );
+
+      await Promise.race([savePromise, timeout]);
       router.replace("/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save profile");
+      const message = err instanceof Error ? err.message : "Failed to save profile";
+      if (message.includes("permission") || message.includes("PERMISSION_DENIED")) {
+        setError("Permission denied. Firestore security rules may need to be deployed.");
+      } else {
+        setError(message);
+      }
     } finally {
       setSaving(false);
     }
