@@ -1,6 +1,6 @@
 import type { JobSourceAdapter, RawJob, JobSearchParams } from "./jobSource";
 
-const JSEARCH_BASE = "https://jsearch.p.rapidapi.com/v1/search";
+const JSEARCH_BASE = "https://jsearch.p.rapidapi.com/search";
 
 interface JSearchJob {
   job_id: string;
